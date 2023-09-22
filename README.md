@@ -1,3 +1,3 @@
-# Brut Engine
+# BrutEngine
 
 A wasm-based game engine written in Go.

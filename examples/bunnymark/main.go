@@ -16,7 +16,7 @@ const (
 
 var (
 	defaultEntities   = 1000
-	entitiesPerSecond = 10
+	entitiesPerSecond = 100
 	entityTex         Texture
 
 	entities = make([]Entity, defaultEntities)
@@ -28,30 +28,24 @@ var (
 )
 
 type Entity struct {
-	x, y       float32
-	vx, vy     float32
-	c          [4]float32
-	spawnTimer float32
-	rot        float32
-}
-
-type Config struct {
-	Flags uint32
+	x, y   float32
+	vx, vy float32
+	c      [4]float32
+	t      float32
 }
 
 //go:export Config
 func config() {
-	ConfigSetFlags(ConfigEngineLogging | ConfigHotReloading)
 }
 
 //go:export Setup
 func setup() {
 	PlatformLog("Setup")
 
-	GfxSetTargetSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
-	PlatformSetWindowSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
+	GraphicsSetTargetSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
+	PlatformSetScreenSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
 
-	entityTex = AssetLoadImage("gopher.png")
+	entityTex = AssetLoadTexture("gopher.png")
 	if entityTex == 0 {
 		PlatformLog("unable to load bunny asset")
 		PlatformExit()
@@ -64,7 +58,6 @@ func setup() {
 		e.vx = rand.Float32() * 8
 		e.vy = rand.Float32() * 8
 		e.c = colors[rand.Intn(len(colors))]
-		e.spawnTimer = 0
 	}
 }
 
@@ -89,12 +82,11 @@ func update() {
 		ents := make([]Entity, entitiesPerSecond)
 		for i := range ents {
 			ents[i] = Entity{
-				x:          rand.Float32() * SCREEN_WIDTH,
-				y:          rand.Float32() * SCREEN_HEIGHT,
-				vx:         rand.Float32() * 8,
-				vy:         rand.Float32() * 8,
-				c:          colors[rand.Intn(len(colors))],
-				spawnTimer: 0,
+				x:  rand.Float32() * SCREEN_WIDTH,
+				y:  rand.Float32() * SCREEN_HEIGHT,
+				vx: rand.Float32() * 8,
+				vy: rand.Float32() * 8,
+				c:  colors[rand.Intn(len(colors))],
 			}
 
 			if timer > 0 {
@@ -110,13 +102,8 @@ func update() {
 	for i := range entities {
 		e := &entities[i]
 
-		if e.spawnTimer < 1 {
-			e.spawnTimer += 0.01
-		}
-
-		e.rot += 0.1
-		if e.rot >= 360 {
-			e.rot = 0
+		if e.t < 1 {
+			e.t += 0.01
 		}
 
 		e.vy += GRAVITY
@@ -142,28 +129,28 @@ func update() {
 
 //go:export Render
 func render() {
-	GfxClear(.12, .12, .12, 1)
+	GraphicsClear(.12, .12, .12, 1)
 
 	for _, e := range entities {
-		GfxTextureEx(entityTex, e.x, e.y, 0, 1, 1, e.c[0], e.c[1], e.c[2], e.c[3]*e.spawnTimer)
+		GraphicsTextureEx(entityTex, e.x, e.y, 0, 1, 1, e.c[0], e.c[1], e.c[2], e.c[3]*e.t)
 	}
 
-	GfxRectangle(10, 10, 120, 60, 0, 0, 0, 0.5, false)
+	GraphicsRectangle(10, 10, 120, 60, 0, 0, 0, 0.5, false)
 
 	fps := strconv.FormatFloat(float64(PlatformFps()), 'f', 2, 32)
-	GfxDefaultText("fps: "+fps, 10, 10)
+	GraphicsText("fps: "+fps, 10, 10)
 
 	tps := strconv.FormatFloat(float64(PlatformTps()), 'f', 2, 32)
-	GfxDefaultText("tps: "+tps, 10, 24)
+	GraphicsText("tps: "+tps, 10, 24)
 
-	GfxDefaultText("entities: "+strconv.FormatInt(int64(len(entities)), 10), 10, 36)
+	GraphicsText("entities: "+strconv.FormatInt(int64(len(entities)), 10), 10, 36)
 
 	x := InputCursorX()
 	y := InputCursorY()
 
 	xs := strconv.FormatFloat(float64(x), 'f', 2, 32)
 	ys := strconv.FormatFloat(float64(y), 'f', 2, 32)
-	GfxDefaultText("x "+xs+", y "+ys, 10, 48)
+	GraphicsText("x "+xs+", y "+ys, 10, 48)
 }
 
 func main() {}

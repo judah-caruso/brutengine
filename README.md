@@ -1,3 +1,3 @@
 # BrutEngine
 
-A wasm-based game engine written in Go.
+A Web Assembly-based 2d game engine written in Go.

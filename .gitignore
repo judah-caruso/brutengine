@@ -1,2 +1,4 @@
-game.wasm
+*.wasm
+*.pprof
 .idea/
+*.DS_Store

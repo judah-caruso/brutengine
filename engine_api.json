@@ -1,0 +1,209 @@
+{
+  "version": "0.0.1",
+  "structs": {
+    "Color": [
+      "f32",
+      "f32",
+      "f32",
+      "f32"
+    ],
+    "string": [
+      "u32",
+      "u32"
+    ]
+  },
+  "exports": [
+    {
+      "namespace": "Config",
+      "functions": [
+        {
+          "name": "GetEngineFlags",
+          "args": [],
+          "rets": [
+            "u32"
+          ]
+        },
+        {
+          "name": "SetEngineFlags",
+          "args": [
+            "u32"
+          ],
+          "rets": []
+        }
+      ]
+    },
+    {
+      "namespace": "Platform",
+      "functions": [
+        {
+          "name": "Exit",
+          "args": [],
+          "rets": []
+        },
+        {
+          "name": "Fps",
+          "args": [],
+          "rets": [
+            "f32"
+          ]
+        },
+        {
+          "name": "Log",
+          "args": [
+            "string"
+          ],
+          "rets": []
+        },
+        {
+          "name": "SetScreenSize",
+          "args": [
+            "i32",
+            "i32"
+          ],
+          "rets": []
+        },
+        {
+          "name": "Tps",
+          "args": [],
+          "rets": [
+            "f32"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "Input",
+      "functions": [
+        {
+          "name": "CursorX",
+          "args": [],
+          "rets": [
+            "f32"
+          ]
+        },
+        {
+          "name": "CursorY",
+          "args": [],
+          "rets": [
+            "f32"
+          ]
+        },
+        {
+          "name": "Down",
+          "args": [
+            "u32"
+          ],
+          "rets": [
+            "bool"
+          ]
+        },
+        {
+          "name": "Pressed",
+          "args": [
+            "u32"
+          ],
+          "rets": [
+            "bool"
+          ]
+        },
+        {
+          "name": "Up",
+          "args": [
+            "u32"
+          ],
+          "rets": [
+            "bool"
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "Graphics",
+      "functions": [
+        {
+          "name": "Circle",
+          "args": [
+            "f32",
+            "f32",
+            "f32",
+            "Color",
+            "bool"
+          ],
+          "rets": []
+        },
+        {
+          "name": "Clear",
+          "args": [
+            "Color"
+          ],
+          "rets": []
+        },
+        {
+          "name": "Rectangle",
+          "args": [
+            "f32",
+            "f32",
+            "f32",
+            "f32",
+            "Color",
+            "bool"
+          ],
+          "rets": []
+        },
+        {
+          "name": "SetTargetSize",
+          "args": [
+            "i32",
+            "i32"
+          ],
+          "rets": []
+        },
+        {
+          "name": "Text",
+          "args": [
+            "string",
+            "f32",
+            "f32"
+          ],
+          "rets": []
+        },
+        {
+          "name": "Texture",
+          "args": [
+            "u32",
+            "f32",
+            "f32"
+          ],
+          "rets": []
+        },
+        {
+          "name": "TextureEx",
+          "args": [
+            "u32",
+            "f32",
+            "f32",
+            "f32",
+            "f32",
+            "f32",
+            "Color"
+          ],
+          "rets": []
+        }
+      ]
+    },
+    {
+      "namespace": "Asset",
+      "functions": [
+        {
+          "name": "LoadTexture",
+          "args": [
+            "string"
+          ],
+          "rets": [
+            "u32"
+          ]
+        }
+      ]
+    }
+  ]
+}

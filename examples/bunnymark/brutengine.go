@@ -1,24 +1,12 @@
 package main
 
-// Config
-
-//go:export ConfigSetFlags
-func ConfigSetFlags(ConfigFlag)
-
-type ConfigFlag uint32
-
-const (
-	ConfigHotReloading ConfigFlag = 1 << iota
-	ConfigEngineLogging
-)
-
 // Platform
 
 //go:export PlatformLog
 func PlatformLog(string)
 
-//go:export PlatformSetWindowSize
-func PlatformSetWindowSize(w, h int32)
+//go:export PlatformSetScreenSize
+func PlatformSetScreenSize(w, h int32)
 
 //go:export PlatformExit
 func PlatformExit()
@@ -65,26 +53,26 @@ func InputCursorY() float32
 
 // Graphics
 
-//go:export GfxSetTargetSize
-func GfxSetTargetSize(int32, int32)
+//go:export GraphicsSetTargetSize
+func GraphicsSetTargetSize(int32, int32)
 
-//go:export GfxClear
-func GfxClear(r, g, b, a float32)
+//go:export GraphicsClear
+func GraphicsClear(r, g, b, a float32)
 
-//go:export GfxTexture
-func GfxTexture(tex Texture, x, y float32)
+//go:export GraphicsTexture
+func GraphicsTexture(tex Texture, x, y float32)
 
-//go:export GfxTextureEx
-func GfxTextureEx(tex Texture, x, y, rot, sx, sy float32, r, g, b, a float32)
+//go:export GraphicsTextureEx
+func GraphicsTextureEx(tex Texture, x, y, rot, sx, sy float32, r, g, b, a float32)
 
-//go:export GfxRectangle
-func GfxRectangle(x, y, w, h float32, r, g, b, a float32, line bool)
+//go:export GraphicsRectangle
+func GraphicsRectangle(x, y, w, h float32, r, g, b, a float32, line bool)
 
-//go:export GfxCircle
-func GfxCircle(x, y, rad float32, r, g, b, a float32, line bool)
+//go:export GraphicsCircle
+func GraphicsCircle(x, y, rad float32, r, g, b, a float32, line bool)
 
-//go:export GfxDefaultText
-func GfxDefaultText(s string, x, y float32)
+//go:export GraphicsText
+func GraphicsText(s string, x, y float32)
 
 // Asset
 
@@ -92,5 +80,5 @@ type (
 	Texture uint32
 )
 
-//go:export AssetLoadImage
-func AssetLoadImage(string) Texture
+//go:export AssetLoadTexture
+func AssetLoadTexture(string) Texture

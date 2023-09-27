@@ -1,4 +1,4 @@
-package main
+package engine
 
 import "fmt"
 
@@ -14,7 +14,7 @@ const (
 	LevelAll  = LevelDebug | LevelInfo | LevelWarn | LevelError
 )
 
-var logLevel LogLevel = LevelNone
+var logLevel LogLevel = LevelAll
 
 func AddLogLevel(l LogLevel) {
 	logLevel |= l

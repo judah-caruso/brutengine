@@ -19,7 +19,7 @@ type (
 	}
 )
 
-type InputEvent = uint32
+type InputEvent uint32
 
 const (
 	InputNone InputEvent = iota
@@ -39,6 +39,18 @@ const (
 
 	_inputMax
 )
+
+func (*InputEvent) Export() map[string]InputEvent {
+	return map[string]InputEvent{
+		"Escape":      InputEscape,
+		"Enter":       InputEnter,
+		"Space":       InputSpace,
+		"Backspace":   InputBackspace,
+		"MouseLeft":   InputMouseLeft,
+		"MouseMiddle": InputMouseMiddle,
+		"MouseRight":  InputMouseRight,
+	}
+}
 
 type inputState uint32
 

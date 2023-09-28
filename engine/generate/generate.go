@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/judah-caruso/brutengine/engine"
 )
@@ -56,6 +57,7 @@ type (
 	ApiType string
 	Api     struct {
 		Version string                `json:"version"`
+		Enums   map[ApiType]Enum      `json:"enums"`
 		Structs map[ApiType][]ApiType `json:"structs"`
 		Exports []Export              `json:"exports"`
 	}
@@ -68,6 +70,10 @@ type (
 		Args []ApiType `json:"args"`
 		Rets []ApiType `json:"rets"`
 	}
+	Enum struct {
+		Type   ApiType        `json:"type"`
+		Values map[string]int `json:"values"`
+	}
 )
 
 const (
@@ -77,16 +83,44 @@ const (
 	ApiFloat ApiType = "f32"
 )
 
-var structTypes = map[ApiType][]ApiType{
-	"string": {ApiUint, ApiUint},
-}
+var (
+	enumTypes   = map[ApiType]ApiType{}
+	enumMap     = map[ApiType]reflect.Type{}
+	structTypes = map[ApiType][]ApiType{
+		"string": {ApiUint, ApiUint},
+	}
+)
 
 func goTypeToApi(t reflect.Type) ApiType {
 	k := t.Kind()
 	switch k {
 	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int:
+		name := ApiType(t.Name())
+		if unicode.IsUpper(rune(name[0])) {
+			_, ok := enumTypes[name]
+			if ok {
+				return name
+			}
+
+			enumTypes[name] = ApiInt
+			enumMap[name] = t
+			return name
+		}
+
 		return ApiInt
 	case reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uint:
+		name := ApiType(t.Name())
+		if unicode.IsUpper(rune(name[0])) {
+			_, ok := enumTypes[name]
+			if ok {
+				return name
+			}
+
+			enumTypes[name] = ApiUint
+			enumMap[name] = t
+			return name
+		}
+
 		return ApiUint
 	case reflect.Bool:
 		return ApiBool
@@ -123,6 +157,11 @@ func decodeFromStack(t ApiType) string {
 	case ApiFloat:
 		return "api.DecodeF32"
 	default:
+		t, isEnum := enumTypes[t]
+		if isEnum {
+			return decodeFromStack(t)
+		}
+
 		panic("unreachable")
 	}
 }
@@ -136,6 +175,11 @@ func encodeToStack(t ApiType) string {
 	case ApiFloat:
 		return "api.EncodeF32"
 	default:
+		t, isEnum := enumTypes[t]
+		if isEnum {
+			return encodeToStack(t)
+		}
+
 		panic("unreachable")
 	}
 }
@@ -151,6 +195,11 @@ func normalizeType(t ApiType) string {
 	case ApiFloat:
 		return "float32"
 	default:
+		t, isEnum := enumTypes[t]
+		if isEnum {
+			return normalizeType(t)
+		}
+
 		panic("unreachable")
 	}
 }
@@ -168,30 +217,36 @@ func wasmToGo(t ApiType, variable string) string {
 	case "string":
 		return fmt.Sprintf("readWasmString(m.Memory(), %[1]s_0, %[1]s_1)", variable)
 	default:
-		comp, ok := structTypes[t]
-		if !ok {
-			panic("attempt to convert non-existant type:" + t)
-		}
+		st, isStruct := structTypes[t]
+		if isStruct {
+			buf := bytes.Buffer{}
+			buf.WriteString(string(t))
+			buf.WriteByte('{')
 
-		buf := bytes.Buffer{}
-		buf.WriteString(string(t))
-		buf.WriteByte('{')
-
-		for i, c := range comp {
-			buf.WriteString(wasmToGo(c, fmt.Sprintf("%s_%d", variable, i)))
-			if i < len(comp)-1 {
-				buf.WriteString(", ")
+			for i, c := range st {
+				buf.WriteString(wasmToGo(c, fmt.Sprintf("%s_%d", variable, i)))
+				if i < len(st)-1 {
+					buf.WriteString(", ")
+				}
 			}
+
+			buf.WriteByte('}')
+			return buf.String()
 		}
 
-		buf.WriteByte('}')
-		return buf.String()
+		_, isEnum := enumTypes[t]
+		if isEnum {
+			return fmt.Sprintf("%s(%s)", t, variable)
+		}
+
+		panic(fmt.Sprintf("attempt to convert invalid type: %s", t))
 	}
 }
 
 func generateJsonApi(types []reflect.Type) (*Api, error) {
 	jsonApi := Api{
 		Version: apiVersion,
+		Enums:   make(map[ApiType]Enum),
 	}
 
 	for _, typ := range types {
@@ -227,6 +282,43 @@ func generateJsonApi(types []reflect.Type) (*Api, error) {
 			Namespace: namespace,
 			Functions: funcs,
 		})
+	}
+
+	for apiT, goT := range enumMap {
+		t := enumTypes[apiT]
+
+		recv := reflect.New(goT)
+		method := recv.MethodByName("Export")
+		if !method.IsValid() {
+			jsonApi.Enums[apiT] = Enum{
+				Type: t,
+			}
+			continue
+		}
+
+		values := make(map[string]int)
+		rawValues := method.Call(nil)
+
+		iter := rawValues[0].MapRange()
+		for iter.Next() {
+			k := iter.Key().String()
+			v := iter.Value()
+
+			if v.CanInt() {
+				values[k] = int(v.Int())
+				continue
+			}
+
+			if v.CanUint() {
+				values[k] = int(v.Uint())
+				continue
+			}
+		}
+
+		jsonApi.Enums[apiT] = Enum{
+			Type:   t,
+			Values: values,
+		}
 	}
 
 	jsonApi.Structs = structTypes

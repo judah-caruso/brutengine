@@ -99,7 +99,7 @@ func wasmTexture(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg1 := api.DecodeF32(stack[1])
 	arg2 := api.DecodeF32(stack[2])
 	brut.Graphics.Texture(
-		uint32(arg0),
+		Texture(arg0),
 		float32(arg1),
 		float32(arg2),
 	)
@@ -118,7 +118,7 @@ func wasmTextureEx(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg6_2 := api.DecodeF32(stack[8])
 	arg6_3 := api.DecodeF32(stack[9])
 	brut.Graphics.TextureEx(
-		uint32(arg0),
+		Texture(arg0),
 		float32(arg1),
 		float32(arg2),
 		float32(arg3),

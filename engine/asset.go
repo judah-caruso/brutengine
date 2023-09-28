@@ -17,7 +17,7 @@ type (
 	}
 
 	// Texture is a non-zero texture id that can be used to get textureData
-	Texture = uint32
+	Texture uint32
 
 	// textureData is the internal representation of a texture
 	textureData struct {
@@ -90,3 +90,5 @@ func (a *Asset) LoadTexture(name string) Texture {
 	LogDebug("asset - texture loaded!")
 	return id
 }
+
+var _ IAsset = (*Asset)(nil)

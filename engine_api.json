@@ -1,5 +1,31 @@
 {
   "version": "0.0.1",
+  "enums": {
+    "EngineFlag": {
+      "type": "u32",
+      "values": {
+        "HotReload": 1,
+        "Logging": 4,
+        "SetupAfterReload": 2
+      }
+    },
+    "InputEvent": {
+      "type": "u32",
+      "values": {
+        "Backspace": 5,
+        "Enter": 3,
+        "Escape": 2,
+        "MouseLeft": 8,
+        "MouseMiddle": 9,
+        "MouseRight": 10,
+        "Space": 4
+      }
+    },
+    "Texture": {
+      "type": "u32",
+      "values": null
+    }
+  },
   "structs": {
     "Color": [
       "f32",
@@ -20,13 +46,13 @@
           "name": "GetEngineFlags",
           "args": [],
           "rets": [
-            "u32"
+            "EngineFlag"
           ]
         },
         {
           "name": "SetEngineFlags",
           "args": [
-            "u32"
+            "EngineFlag"
           ],
           "rets": []
         }
@@ -91,7 +117,7 @@
         {
           "name": "Down",
           "args": [
-            "u32"
+            "InputEvent"
           ],
           "rets": [
             "bool"
@@ -100,7 +126,7 @@
         {
           "name": "Pressed",
           "args": [
-            "u32"
+            "InputEvent"
           ],
           "rets": [
             "bool"
@@ -109,7 +135,7 @@
         {
           "name": "Up",
           "args": [
-            "u32"
+            "InputEvent"
           ],
           "rets": [
             "bool"
@@ -170,7 +196,7 @@
         {
           "name": "Texture",
           "args": [
-            "u32",
+            "Texture",
             "f32",
             "f32"
           ],
@@ -179,7 +205,7 @@
         {
           "name": "TextureEx",
           "args": [
-            "u32",
+            "Texture",
             "f32",
             "f32",
             "f32",
@@ -200,7 +226,7 @@
             "string"
           ],
           "rets": [
-            "u32"
+            "Texture"
           ]
         }
       ]

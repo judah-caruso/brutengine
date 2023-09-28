@@ -24,6 +24,6 @@ func wasmGetEngineFlags(ctx context.Context, m api.Module, stack []WasmValue) {
 func wasmSetEngineFlags(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg0 := api.DecodeU32(stack[0])
 	brut.Config.SetEngineFlags(
-		uint32(arg0),
+		EngineFlag(arg0),
 	)
 }

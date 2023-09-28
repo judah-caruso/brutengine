@@ -33,7 +33,7 @@ func wasmCursorY(ctx context.Context, m api.Module, stack []WasmValue) {
 func wasmDown(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg0 := api.DecodeU32(stack[0])
 	r0 := brut.Input.Down(
-		uint32(arg0),
+		InputEvent(arg0),
 	)
 	stack[0] = api.EncodeU32(boolToU32(r0))
 }
@@ -42,7 +42,7 @@ func wasmDown(ctx context.Context, m api.Module, stack []WasmValue) {
 func wasmPressed(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg0 := api.DecodeU32(stack[0])
 	r0 := brut.Input.Pressed(
-		uint32(arg0),
+		InputEvent(arg0),
 	)
 	stack[0] = api.EncodeU32(boolToU32(r0))
 }
@@ -51,7 +51,7 @@ func wasmPressed(ctx context.Context, m api.Module, stack []WasmValue) {
 func wasmUp(ctx context.Context, m api.Module, stack []WasmValue) {
 	arg0 := api.DecodeU32(stack[0])
 	r0 := brut.Input.Up(
-		uint32(arg0),
+		InputEvent(arg0),
 	)
 	stack[0] = api.EncodeU32(boolToU32(r0))
 }

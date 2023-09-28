@@ -10,13 +10,21 @@ type (
 	}
 )
 
-type EngineFlag = uint32
+type EngineFlag uint32
 
 const (
 	EngineHotReload EngineFlag = 1 << iota
 	EngineSetupAfterReload
 	EngineLogging
 )
+
+func (*EngineFlag) Export() map[string]EngineFlag {
+	return map[string]EngineFlag{
+		"HotReload":        EngineHotReload,
+		"SetupAfterReload": EngineSetupAfterReload,
+		"Logging":          EngineLogging,
+	}
+}
 
 func (c *Config) Setup() error {
 	c.Engine = EngineHotReload | EngineLogging

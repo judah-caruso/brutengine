@@ -349,7 +349,7 @@ func main() {
 			panic(err)
 		}
 
-		err = os.WriteFile("../engine_api.json", out, fs.ModePerm)
+		err = os.WriteFile("../bindings/engine_api.json", out, fs.ModePerm)
 		if err != nil {
 			panic(err)
 		}

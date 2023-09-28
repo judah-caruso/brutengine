@@ -8,8 +8,9 @@ import (
 
 // IPlatform describes the public go api.
 type IPlatform interface {
+	SetTitle(title string)
 	SetScreenSize(width, height int32)
-	Log(str string)
+	Log(msg string)
 	Fps() float32
 	Tps() float32
 	Exit()
@@ -31,6 +32,10 @@ func (p *Platform) Setup() error {
 	return nil
 }
 
+func (p *Platform) SetTitle(title string) {
+	ebiten.SetWindowTitle(title)
+}
+
 func (p *Platform) SetScreenSize(w, h int32) {
 	p.ScreenWidth = int(w)
 	p.ScreenHeight = int(h)
@@ -44,8 +49,8 @@ func (p *Platform) SetScreenSize(w, h int32) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func (*Platform) Log(s string) {
-	fmt.Println(s)
+func (*Platform) Log(msg string) {
+	fmt.Println(msg)
 }
 
 func (p *Platform) Exit() {

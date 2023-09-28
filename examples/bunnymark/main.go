@@ -40,8 +40,9 @@ func config() {
 
 //go:export Setup
 func setup() {
-	PlatformLog("Setup")
+	PlatformLog("Wasm setup")
 
+	PlatformSetTitle("Gophermark")
 	GraphicsSetTargetSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
 	PlatformSetScreenSize(int32(SCREEN_WIDTH), int32(SCREEN_HEIGHT))
 
@@ -63,7 +64,7 @@ func setup() {
 
 //go:export Teardown
 func teardown() {
-	PlatformLog("Teardown")
+	PlatformLog("Wasm teardown")
 }
 
 var timer = 1.0

@@ -11,6 +11,7 @@ func (a *Platform) Expose(wasm *WasmRuntime) {
 	wasm.ConvertAndExpose("PlatformFps", a.Fps, wasmFps)
 	wasm.ConvertAndExpose("PlatformLog", a.Log, wasmLog)
 	wasm.ConvertAndExpose("PlatformSetScreenSize", a.SetScreenSize, wasmSetScreenSize)
+	wasm.ConvertAndExpose("PlatformSetTitle", a.SetTitle, wasmSetTitle)
 	wasm.ConvertAndExpose("PlatformTps", a.Tps, wasmTps)
 
 }
@@ -44,6 +45,15 @@ func wasmSetScreenSize(ctx context.Context, m api.Module, stack []WasmValue) {
 	brut.Platform.SetScreenSize(
 		int32(arg0),
 		int32(arg1),
+	)
+}
+
+// Calls Platform.SetTitle
+func wasmSetTitle(ctx context.Context, m api.Module, stack []WasmValue) {
+	arg0_0 := api.DecodeU32(stack[0])
+	arg0_1 := api.DecodeU32(stack[1])
+	brut.Platform.SetTitle(
+		readWasmString(m.Memory(), arg0_0, arg0_1),
 	)
 }
 

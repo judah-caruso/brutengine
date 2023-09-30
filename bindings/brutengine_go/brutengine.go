@@ -6,21 +6,21 @@ package brutengine_go
 type EngineFlag uint32
 
 const (
+	EngineFlagSetupAfterReload EngineFlag = 2
 	EngineFlagHotReload        EngineFlag = 1
 	EngineFlagLogging          EngineFlag = 4
-	EngineFlagSetupAfterReload EngineFlag = 2
 )
 
 type InputEvent uint32
 
 const (
+	InputEventBackspace   InputEvent = 5
 	InputEventEnter       InputEvent = 3
 	InputEventEscape      InputEvent = 2
 	InputEventMouseLeft   InputEvent = 8
 	InputEventMouseMiddle InputEvent = 9
 	InputEventMouseRight  InputEvent = 10
 	InputEventSpace       InputEvent = 4
-	InputEventBackspace   InputEvent = 5
 )
 
 type Texture uint32

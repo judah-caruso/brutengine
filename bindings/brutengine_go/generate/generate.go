@@ -92,7 +92,7 @@ func main() {
 	buf.WriteString("package brutengine_go\n")
 
 	// Generate enums
-	fmt.Fprintf(&buf, "// Enums\n\n")
+	buf.WriteString("// Enums\n\n")
 	for name, e := range api.Enums {
 		goT := apiTypeMap[e.Type]
 		apiTypeMap[name] = goT
